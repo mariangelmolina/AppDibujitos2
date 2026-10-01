@@ -8,41 +8,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom Aesthetic Styling (CSS)
-st.markdown("""
-    <style>
-    /* Main Background & Fonts */
-    .stApp {
-        background-color: #FAFAFA;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    /* Header Title Styling */
-    .main-title {
-        color: #2D3748;
-        font-size: 2.8rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 0.2rem;
-    }
-    .sub-title {
-        color: #718096;
-        font-size: 1.1rem;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
-        background-color: #F7FAFC;
-        border-right: 1px solid #E2E8F0;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Main Title
-st.markdown('<h1 class="main-title">Mariangel\'s Board yay ✨🎨</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Crea, dibuja y exprésate con tu paleta favorita</p>', unsafe_allow_html=True)
+# Title & Subtitle
+st.title("Mariangel's Board yay ✨🎨")
+st.caption("Crea, dibuja y exprésate con tu paleta favorita")
 
 # Curated Pastel & Aesthetic Color Palette Presets
 PALETTE = {
@@ -57,7 +25,7 @@ PALETTE = {
 }
 
 with st.sidebar:
-    st.subheader("⚙️ Propiedades del Tablero")
+    st.header("⚙️ Propiedades del Tablero")
     
     # Canvas Dimensions
     with st.expander("📐 Dimensiones del Tablero", expanded=False):
@@ -83,13 +51,13 @@ with st.sidebar:
     stroke_width = st.slider('🖋️ Ancho de línea', 1, 40, 8)
     
     st.divider()
-    st.subheader("🎨 Paleta de Colores")
+    st.header("🎨 Paleta de Colores")
     
     # Preset Color Selector
     selected_preset = st.selectbox("Selecciona un color predefinido:", list(PALETTE.keys()))
     preset_hex = PALETTE[selected_preset]
     
-    # Color Pickers with Preset Default
+    # Color Pickers
     stroke_color = st.color_picker("Color de trazo", preset_hex)
     bg_color = st.color_picker("Color de fondo", "#FFFFFF")
 
@@ -98,7 +66,7 @@ col1, col2, col3 = st.columns([1, 4, 1])
 
 with col2:
     canvas_result = st_canvas(
-        fill_color="rgba(255, 183, 178, 0.3)",  # Soft translucent fill
+        fill_color="rgba(255, 183, 178, 0.3)",
         stroke_width=stroke_width,
         stroke_color=stroke_color,
         background_color=bg_color,
