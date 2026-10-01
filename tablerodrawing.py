@@ -1,109 +1,109 @@
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 
-# Custom CSS for page styling, pastel colors, and decorative sparkling header
-st.markdown(
-    """
+# Page configuration
+st.set_page_config(
+    page_title="Mariangel's Board",
+    page_icon="✨",
+    layout="wide"
+)
+
+# Custom Aesthetic Styling (CSS)
+st.markdown("""
     <style>
-    /* Main Background with soft pastel aesthetic */
+    /* Main Background & Fonts */
     .stApp {
-        background-color: #FAF5FF;
+        background-color: #FAFAFA;
+        font-family: 'Inter', sans-serif;
     }
     
-    /* Decorative Header with glitter beads styling */
-    .glitter-header {
+    /* Header Title Styling */
+    .main-title {
+        color: #2D3748;
+        font-size: 2.8rem;
+        font-weight: 700;
         text-align: center;
-        font-family: 'Playfair Display', serif;
-        color: #7C3AED;
-        font-size: 2.5rem;
-        padding: 10px;
-        background: linear-gradient(90deg, #F3E8FF, #FCE7F3, #E0E7FF);
-        border-radius: 15px;
-        border: 2px dashed #C084FC;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 10px rgba(192, 132, 252, 0.2);
+        margin-bottom: 0.2rem;
     }
-    
-    /* Decorative bead border frame around the main layout */
-    .bead-frame {
-        border: 3px dotted #A855F7;
-        padding: 15px;
-        border-radius: 20px;
-        background-color: #FFFFFF;
-        box-shadow: 0 8px 16px rgba(168, 85, 247, 0.1);
+    .sub-title {
+        color: #718096;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #F7FAFC;
+        border-right: 1px solid #E2E8F0;
     }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
-st.markdown('<div class="glitter-header">✨ ✨ Tablero Mágico de Dibujo ✨ ✨</div>', unsafe_allow_html=True)
+# Main Title
+st.markdown('<h1 class="main-title">Mariangel\'s Board yay ✨🎨</h1>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Crea, dibuja y exprésate con tu paleta favorita</p>', unsafe_allow_html=True)
+
+# Curated Pastel & Aesthetic Color Palette Presets
+PALETTE = {
+    "Rosa Pastel 🌸": "#FFB7B2",
+    "Lila Mágico 🔮": "#C7CEEA",
+    "Azul Cielo ☁️": "#B5EAD7",
+    "Menta Fresca 🌿": "#E2F0CB",
+    "Crema Cálida 🍦": "#FFFFD1",
+    "Durazno Dulce 🍑": "#FFDAC1",
+    "Blanco Puro 🤍": "#FFFFFF",
+    "Noche Oscura 🌙": "#1A202C"
+}
 
 with st.sidebar:
-    st.header("✨ Propiedades y Estilo")
+    st.subheader("⚙️ Propiedades del Tablero")
     
-    # Preset "Pretty Palette" selection
-    st.subheader("🎨 Paletas Predefinidas")
-    palette_choice = st.selectbox(
-        "Elige un tono favorito:",
-        ("Rosa Pastel", "Perla Nacardada", "Lavanda Soñadora", "Menta Fresca", "Oro Rosa", "Personalizado")
+    # Canvas Dimensions
+    with st.expander("📐 Dimensiones del Tablero", expanded=False):
+        canvas_width = st.slider("Ancho (px)", 300, 900, 650, 50)
+        canvas_height = st.slider("Alto (px)", 200, 700, 450, 50)
+    
+    # Drawing Tools Selector
+    drawing_mode = st.selectbox(
+        "🛠️ Herramienta de Dibujo:",
+        ("freedraw", "line", "rect", "circle", "transform", "polygon", "point"),
+        format_func=lambda x: {
+            "freedraw": "✏️ Pincel Libre",
+            "line": "📏 Línea Recta",
+            "rect": "🔲 Rectángulo",
+            "circle": "⚪ Círculo",
+            "transform": "🖐️ Mover / Seleccionar",
+            "polygon": "🔷 Polígono",
+            "point": "📍 Punto"
+        }.get(x, x)
     )
     
-    # Map palette choices to pretty HEX colors
-    palette_colors = {
-        "Rosa Pastel": "#FFB7B2",
-        "Perla Nacardada": "#FDFBF7",
-        "Lavanda Soñadora": "#E2F0CB",
-        "Menta Fresca": "#B5EAD7",
-        "Oro Rosa": "#E8B4B8",
-        "Personalizado": "#FF9AA2"
-    }
+    # Stroke Width
+    stroke_width = st.slider('🖋️ Ancho de línea', 1, 40, 8)
     
-    default_color = palette_colors.get(palette_choice, "#FF9AA2")
+    st.divider()
+    st.subheader("🎨 Paleta de Colores")
     
-    st.subheader("📏 Dimensiones del Tablero")
-    canvas_width = st.slider("Ancho del tablero", 300, 700, 500, 50)
-    canvas_height = st.slider("Alto del tablero", 200, 600, 300, 50)
+    # Preset Color Selector
+    selected_preset = st.selectbox("Selecciona un color predefinido:", list(PALETTE.keys()))
+    preset_hex = PALETTE[selected_preset]
     
-    # Enhanced drawing modes including "Glitter / Beads" stamp mode
-    st.subheader("🛠️ Herramienta")
-    selected_tool = st.selectbox(
-        "Herramienta de Dibujo:",
-        ("Trazo Libre (Pincel)", "Puntos de Brillitos (Glitter/Beads)", "Línea", "Rectángulo", "Círculo", "Mover / Transformar")
+    # Color Pickers with Preset Default
+    stroke_color = st.color_picker("Color de trazo", preset_hex)
+    bg_color = st.color_picker("Color de fondo", "#FFFFFF")
+
+# Center Canvas Layout
+col1, col2, col3 = st.columns([1, 4, 1])
+
+with col2:
+    canvas_result = st_canvas(
+        fill_color="rgba(255, 183, 178, 0.3)",  # Soft translucent fill
+        stroke_width=stroke_width,
+        stroke_color=stroke_color,
+        background_color=bg_color,
+        height=canvas_height,
+        width=canvas_width,
+        drawing_mode=drawing_mode,
+        key=f"canvas_{canvas_width}_{canvas_height}_{selected_preset}",
     )
-    
-    # Map friendly names back to fabric.js modes
-    mode_mapping = {
-        "Trazo Libre (Pincel)": "freedraw",
-        "Puntos de Brillitos (Glitter/Beads)": "point",
-        "Línea": "line",
-        "Rectángulo": "rect",
-        "Círculo": "circle",
-        "Mover / Transformar": "transform"
-    }
-    drawing_mode = mode_mapping[selected_tool]
-    
-    # Stroke width slider
-    stroke_width = st.slider('Tamaño del trazo / brillito', 1, 50, 15)
-    
-    # Stroke color picker initialized to preset palette
-    stroke_color = st.color_picker("Color de Trazo / Brillo", default_color)
-    
-    # Background color
-    bg_color = st.color_picker("Color del Lienzo", "#FFFFFF")
-
-# Display the canvas wrapped inside decorative glitter beads container
-st.markdown('<div class="bead-frame">', unsafe_allow_html=True)
-
-canvas_result = st_canvas(
-    fill_color="rgba(255, 192, 203, 0.3)",  # Soft translucent fill
-    stroke_width=stroke_width,
-    stroke_color=stroke_color,
-    background_color=bg_color,
-    height=canvas_height,
-    width=canvas_width,
-    drawing_mode=drawing_mode,
-    key=f"glitter_canvas_{canvas_width}_{canvas_height}_{palette_choice}",
-)
-
-st.markdown('</div>', unsafe_allow_html=True)
